@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: ai-deployment
+    tier: b
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-deployment
+      tier: b
+  template:
+    metadata:
+      labels:
+        app: ai-deployment
+        tier: b
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: b
+          image:
+          ports:
+            - containerPort: 8080

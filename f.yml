@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: f-service
+spec:
+  selector:
+    app: f-deployment
+    tier: f
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: f-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: f-deployment
+      tier: f
+  template:
+    metadata:
+      labels:
+        app: f-deployment
+        tier: f
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: f
+          image:
+          ports:
+            - containerPort: 3000
+          env:
+            - name: API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: f-secret
+                  key: API_URL

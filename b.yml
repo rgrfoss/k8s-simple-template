@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: b-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+  selector:
+    app: b-deployment
+    tier: b
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: b-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: b-deployment
+      tier: b
+  template:
+    metadata:
+      labels:
+        app: b-deployment
+        tier: b
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: b
+          image:
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: NODE_ENV
+            - name: PG_CONNECTION
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: PG_CONNECTION
+            - name: S3_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: S3_ENDPOINT
+            - name: BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: BUCKET_NAME
+            - name: AWS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: AWS_KEY
+            - name: AWS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: AWS_SECRET
+            - name: SENDGRID
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: SENDGRID
+            - name: JWT
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: JWT
+            - name: STRIPE
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: STRIPE
+            - name: WEB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: WEB_URL
+            - name: AI_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: b-secret
+                  key: AI_SERVER
